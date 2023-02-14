@@ -2,12 +2,12 @@ import requests
 import configparser
 from bs4 import BeautifulSoup
 
-# Read config file
+from src.notion import createNewsBlock
+
 config = configparser.ConfigParser()
 config.read("config.ini")
 
 HEADERS = {
-    # "token_v2": config["REDDIT"]["token"],
     "User-Agent": "My User Agent 1.0",
 }
 
@@ -25,8 +25,7 @@ def query_all_saved_content():
         for a in articles:
             title = a.find("title").text
             link = a.find("link").get("href")
-            # published = a.find("published")
-            article = {"title": title, "link": link}
+            article = {"title": title, "url": link}
             article_list.append(article)
 
         return article_list
@@ -36,4 +35,6 @@ def query_all_saved_content():
 
 
 if __name__ == "__main__":
-    print(query_all_saved_content())
+    for article in query_all_saved_content():
+        createNewsBlock(article)
+
