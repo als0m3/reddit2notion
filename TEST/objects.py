@@ -1,4 +1,4 @@
-def newsObj(article):
+def callout(article):
     return {
     "children": [
         {

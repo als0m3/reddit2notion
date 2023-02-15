@@ -1,40 +1,22 @@
-import requests
-import configparser
-from bs4 import BeautifulSoup
+import os
+import dotenv
+dotenv.load_dotenv()
 
-from src.notion import createNewsBlock
+from src.notion import Notion
+from src.reddit import *
 
-config = configparser.ConfigParser()
-config.read("config.ini")
+def main():
+    notion_ = Notion()
+    notion_.setKey(os.environ["NOTION_KEY"])
+    notion_.setGalleryID(config["NOTION"]["database_id"])
 
-HEADERS = {
-    "User-Agent": "My User Agent 1.0",
-}
+    reddit_ = Reddit()
+    reddit_.setFeedID(config["REDDIT"]["feed"])
+    reddit_.setUsername(config["REDDIT"]["username"])
 
-
-def query_all_saved_content():
-    article_list = []
-    try:
-        r = requests.get(
-            f'{config["REDDIT"]["url"]}?feed={config["REDDIT"]["feed"]}&user={config["REDDIT"]["username"]}',
-            headers=HEADERS,
-        )
-        soup = BeautifulSoup(r.content, features="xml")
-
-        articles = soup.findAll("entry")
-        for a in articles:
-            title = a.find("title").text
-            link = a.find("link").get("href")
-            article = {"title": title, "url": link}
-            article_list.append(article)
-
-        return article_list
-    except Exception as e:
-        print("The scraping job failed. See exception: ")
-        print(e)
+    for article in reddit_.query_all_saved_content():
+        notion_.createGalleryItem(article)
 
 
 if __name__ == "__main__":
-    for article in query_all_saved_content():
-        createNewsBlock(article)
-
+    main()

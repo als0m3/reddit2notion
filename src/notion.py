@@ -1,30 +1,29 @@
-import os
 import requests
-import json
-import dotenv
-import configparser
 
-from src.objects import newsObj 
+from src.object_templates.galleryItem import galleryItem
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-dotenv.load_dotenv()
 
-HEADERS = {
-    'Authorization': 'Bearer ' + os.environ.get("NOTION_KEY"),
-    'Content-Type': 'application/json',
-    'Notion-Version': '2022-02-22',
-}
+class Notion:
+    parent_id = ""
+    database_id = ""
+    notion_key = ""
 
-def createNewsBlock(article):
-    response = requests.patch(
-        f'https://api.notion.com/v1/blocks/{config["NOTION"]["reddit_parent"]}/children',
-        headers=HEADERS,
-        json=newsObj(article),
-    )
-    if response.status_code == 200:
-        print("Success")
-    else:
-        print("Failed")
-        print(response.status_code)
-        print(response.text)
+    def setParentID(self, parent_id):
+        self.parent_id = parent_id
+    
+    def setGalleryID(self, database_id):
+        self.database_id = database_id
+
+    def setKey(self, notion_key):
+        self.notion_key = notion_key
+
+    def createGalleryItem(self, data_):
+        headers = {
+            'Authorization': 'Bearer ' + self.notion_key,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-02-22',
+        }
+        return requests.post(
+            "https://api.notion.com/v1/pages", headers=headers, json=galleryItem(data_, self.database_id)
+        )
+    
