@@ -1,11 +1,10 @@
 import requests
-import configparser
+# import configparser
 from bs4 import BeautifulSoup
 import markdownify
 
-
-config = configparser.ConfigParser()
-config.read("config.ini")
+# config = configparser.ConfigParser()
+# config.read("config.ini")
 
 HEADERS = {
     "User-Agent": "My User Agent 1.0",
@@ -26,7 +25,7 @@ class Reddit:
         article_list = []
         try:
             r = requests.get(
-                f'{config["REDDIT"]["url"]}?feed={self.feed_id}&user={self.username}',
+                f'https://www.reddit.com/saved.rss?feed={self.feed_id}&user={self.username}',
                 headers=HEADERS,
             )
             soup = BeautifulSoup(r.content, features="xml")
