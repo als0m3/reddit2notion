@@ -3,7 +3,7 @@
 # Custom folders
 poc/
 *.sqlite3
-
+config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

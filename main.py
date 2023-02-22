@@ -1,57 +1,33 @@
-import os
 import dotenv
-import sqlite3
 import hashlib
 import time
 from termcolor import colored
 
 dotenv.load_dotenv()
 
+from configparser import ConfigParser
+
+config_ = ConfigParser()
+config_.read("config.ini")
 
 from src.notion import Notion
 from src.reddit import *
 from src.setup import checkSetup
 from src.storage import *
 
-
-def config():
-    db = sqlite3.connect("config.sqlite3")
-
-    return {
-        "NOTION": {
-            "key": db.execute(
-                "SELECT * FROM config WHERE key = 'NOTION_KEY'"
-            ).fetchone()[1],
-            "database_id": db.execute(
-                "SELECT * FROM config WHERE key = 'NOTION_DATABASE_ID'"
-            ).fetchone()[1],
-        },
-        "REDDIT": {
-            "username": db.execute(
-                "SELECT * FROM config WHERE key = 'REDDIT_USERNAME'"
-            ).fetchone()[1],
-            "feed": db.execute(
-                "SELECT * FROM config WHERE key = 'REDDIT_FEED_ID'"
-            ).fetchone()[1],
-        },
-    }
-
-
 def main():
     checkSetup()
 
-    config_ = config()
-
     notion_ = Notion()
-    notion_.setKey(config_["NOTION"]["key"])
-    notion_.setGalleryID(config_["NOTION"]["database_id"])
+    notion_.setKey(config_["NOTION.secrets"]["NOTION_KEY"])
+    notion_.setGalleryID(config_["NOTION.secrets"]["NOTION_DATABASE_ID"])
 
     reddit_ = Reddit()
-    reddit_.setFeedID(config_["REDDIT"]["feed"])
-    reddit_.setUsername(config_["REDDIT"]["username"])
+    reddit_.setFeedID(config_["REDDIT.secrets"]["REDDIT_FEED_ID"])
+    reddit_.setUsername(config_["REDDIT.secrets"]["REDDIT_USERNAME"])
 
-    print("Checking for new articles...")
     while True:
+        print("Checking for new articles...")
         for article in reddit_.query_all_saved_content():
             hash = hashlib.sha256(article["url"].encode("utf-8")).hexdigest()
 
@@ -82,7 +58,7 @@ def main():
                     }
                 )
                 notion_.createGalleryItem(article)
-        time.sleep(60)
+        time.sleep(int(config_["DEFAULT"]["refresh_interval"]))
 
 
 if __name__ == "__main__":
