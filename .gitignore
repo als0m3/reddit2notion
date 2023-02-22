@@ -4,6 +4,7 @@
 poc/
 *.sqlite3
 config.ini
+clean.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -20,6 +20,11 @@ def galleryItem(article, gallery_id):
                     },
                 ],
             },
+            "Date": {  
+                 "date": {
+                    "start": article["date"],
+                },
+            },
             "Source": {
                 "select": {
                     "name": article["source"],
