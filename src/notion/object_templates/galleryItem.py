@@ -1,4 +1,3 @@
-
 def galleryItem(article, gallery_id):
     return {
         "parent": {
@@ -7,7 +6,7 @@ def galleryItem(article, gallery_id):
         "icon": {"type": "emoji", "emoji": "🗞️"},
         "cover": {
             "external": {
-                "url": "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=2400",
+                "url": article["icon"],
             },
         },
         "properties": {
@@ -20,8 +19,13 @@ def galleryItem(article, gallery_id):
                     },
                 ],
             },
-            "Date": {  
-                 "date": {
+            "Category": {
+                "select": {
+                    "name": article["category"],
+                },
+            },
+            "Date": {
+                "date": {
                     "start": article["date"],
                 },
             },
