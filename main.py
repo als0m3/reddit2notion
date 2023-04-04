@@ -18,15 +18,23 @@ config_.read("config.ini")
 def main():
     checkSetup()
 
-    notion_ = Notion(
-        config_["NOTION.secrets"]["NOTION_DATABASE_ID"],
-        config_["NOTION.secrets"]["NOTION_KEY"],
-    )
+    try:
+        notion_ = Notion(
+            config_["NOTION.secrets"]["NOTION_DATABASE_ID"],
+            config_["NOTION.secrets"]["NOTION_KEY"],
+        )
+    except KeyError as e:
+        print("Please check your Notion API key and database ID.")
+        exit(1)
 
-    reddit_ = Reddit(
-        config_["REDDIT.secrets"]["REDDIT_USERNAME"],
-        config_["REDDIT.secrets"]["REDDIT_FEED_ID"],
-    )
+    try:
+        reddit_ = Reddit(
+            config_["REDDIT.secrets"]["REDDIT_USERNAME"],
+            config_["REDDIT.secrets"]["REDDIT_FEED_ID"],
+        )
+    except KeyError as e:
+        print("Please check your Reddit API key and database ID.")
+        exit(1)
 
     while True:
         print("Checking for new articles...")
@@ -45,16 +53,22 @@ def main():
                         "content": article["content"],
                         "url": article["url"],
                         "source": article["source"],
+                        "icon": article["icon"],
+                        "category": article["category"],
                     }
                 )
-                notion_.createGalleryItem({
+                notion_.createGalleryItem(
+                    {
                         "hash": hash,
                         "date": datetime.datetime.now().isoformat(),
                         "title": article["title"],
                         "content": article["content"],
                         "url": article["url"],
                         "source": article["source"],
-                    })
+                        "icon": article["icon"],
+                        "category": article["category"],
+                    }
+                )
         time.sleep(int(config_["DEFAULT"]["refresh_interval"]))
 
 

@@ -1,6 +1,9 @@
 # Reddit 2 Notion
 This Python script allows users to retrieve saved posts from their Reddit account and automatically add them to a Notion page. This allows users to keep track of their favorite posts on Reddit without having to manually search through their history.
 
+## Roadmap
+- [ ] Wait for Notion API to support Template Button creation
+
 ## Getting Started
 
 ### Prerequisites
@@ -48,3 +51,13 @@ REDDIT_FEED_ID=
 ```
 python3 main.py
 ```
+
+
+## Tips
+
+### Get your Reddit Feed ID
+
+1. Go to `https://ssl.reddit.com/prefs/feeds/`
+2. Click on `your saved links`
+3. Copy the ID from the URL
+
