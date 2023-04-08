@@ -6,6 +6,7 @@ from configparser import ConfigParser
 from src.utils.display import banner, display_new_articles
 from src.notion.notion import Notion
 from src.reddit.reddit import Reddit
+from src.linkedin.linkedin import Linkedin
 from src.storage.setup import checkSetup
 from src.storage.storage import *
 
@@ -34,6 +35,14 @@ def main():
         )
     except KeyError as e:
         print("Please check your Reddit API key and database ID.")
+        exit(1)
+
+    try:
+        linkedin_ = Linkedin(
+            config_["LINKEDIN.secrets"]["LINKEDIN_AT"],
+        )
+    except KeyError as e:
+        print("Please check your Linkedin API key and database ID.")
         exit(1)
 
     while True:
@@ -69,6 +78,39 @@ def main():
                         "category": article["category"],
                     }
                 )
+
+        for article in linkedin_.query_all_saved_content():
+            hash = hashlib.sha256(article["url"].encode("utf-8")).hexdigest()
+
+            if is_news_already_stored(hash):
+                continue
+            else:
+                display_new_articles(article)
+                store_news(
+                    {
+                        "hash": hash,
+                        "date": datetime.datetime.now().isoformat(),
+                        "title": article["title"],
+                        "content": article["content"],
+                        "url": article["url"],
+                        "source": article["source"],
+                        "icon": article["icon"],
+                        "category": article["category"],
+                    }
+                )
+                notion_.createGalleryItem(
+                    {
+                        "hash": hash,
+                        "date": datetime.datetime.now().isoformat(),
+                        "title": article["title"],
+                        "content": article["content"],
+                        "url": article["url"],
+                        "source": article["source"],
+                        "icon": article["icon"],
+                        "category": article["category"],
+                    }
+                )
+
         time.sleep(int(config_["DEFAULT"]["refresh_interval"]))
 
 
