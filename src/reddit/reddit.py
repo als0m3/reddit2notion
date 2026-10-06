@@ -15,7 +15,7 @@ class Reddit:
             r = requests.get(url, headers={"User-Agent": "Reddit2Notion/0.1"})
             soup = BeautifulSoup(r.content, features="xml")
 
-            for a in soup.findAll("entry"):
+            for a in soup.find_all("entry"):
 
                 subreddit = a.find("category").get("term")
 

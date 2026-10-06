@@ -1,6 +1,12 @@
 # Reddit 2 Notion
 This Python script allows users to retrieve saved posts from their Reddit account and automatically add them to a Notion page. This allows users to keep track of their favorite posts on Reddit without having to manually search through their history.
 
+## Maintenance status
+
+This earlier integration depends on Reddit feeds, Notion APIs, and external image endpoints. Dependency checks do not establish that these live integrations still work. Test with your own accounts before relying on automated imports.
+
+Use Python 3.10 or newer. Runtime dependencies are defined in `requirements.in` and locked with hashes in `requirements.txt`. To refresh them: `uv pip compile requirements.in --upgrade --generate-hashes -o requirements.txt`.
+
 ## Roadmap
 - [ ] Wait for Notion API to support Template Button creation
 
